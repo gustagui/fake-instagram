@@ -1,5 +1,5 @@
-const { User } = require('../models');
-const bcrypt = require('bcryptjs');
+const { User } = require("../models");
+const bcrypt = require("bcryptjs");
 
 const authController = {
   showLogin(req, res) {
@@ -8,15 +8,16 @@ const authController = {
   showRegister(req, res) {
     return res.render("auth/register");
   },
-  async register(req, res) {    
-      
+
+  async register(req, res) {
     try {
       const { name, email, password, username } = req.body;
+      const hash = bcrypt.hashSync(password, 10);
 
       const user = await User.create({
         name,
         email,
-        password:bcrypt.hashSync(password, 10),
+        password: hash,
         username,
         avatar: "link",
         create_at: new Date().toISOString(),
@@ -28,6 +29,7 @@ const authController = {
       return res.redirect("/registro");
     }
   },
+
   async login(req, res) {
     try {
       const { email, password } = req.body;
@@ -45,6 +47,12 @@ const authController = {
       if (!bcrypt.compareSync(password, user.password)) {
         return res.render("auth/login", { error: "Senha está errada!" });
       }
+      Object.assign(req.session, {
+        user: {
+          id: user.id,
+          name: user.name,
+        },
+      });
 
       return res.redirect("/home");
     } catch (error) {
@@ -57,4 +65,3 @@ const authController = {
 };
 
 module.exports = authController;
-
