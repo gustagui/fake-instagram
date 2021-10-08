@@ -39,46 +39,51 @@
     </header>
     <main class="container content">
       <% publications.forEach( publication =>{ %>
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <img class="avatar" src="/img/avatar-example.png" />
-              <b><%= publication.User.name %></b>
-            </div>
-            <img src="/img/icons/more-vertical.svg" />
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <img class="avatar" src="/img/avatar-example.png" />
+            <b><%= publication.User.name %></b>
           </div>
-          <div class="card-img">
-            <img src="/posts/<%= publication.image %>" />
-          </div>
-          <div class="card-body">
-            <div class="card-itens">
-              <div class="likes">
-                <img src="/img/icons/heart.svg" />
-                <b>10 likes</b>
-              </div>
-              <b
-                >Postado no dia: <%= new
-                Intl.DateTimeFormat(user.local).format(publication.create_at)
-                %></b
-              >
-            </div>
-            <div class="card-comments">
-              <p><b>Mario Luz</b> Que incrivel!</p>
-            </div>
-          </div>
-          <form class="form-comments">
-            <input type="text" hidden name="postId" />
-            <input
-              type="text"
-              placeholder="Adicione um comentário..."
-              name="description"
-            />
-            <button type="submit">Publicar</button>
-          </form>
+          <img src="/img/icons/more-vertical.svg" />
         </div>
-        <% }) %>
+        <div class="card-img">
+          <img src="/posts/<%= publication.image %>" />
+        </div>
+        <div class="card-body">
+          <div class="card-itens">
+            <div class="likes">
+              <img src="/img/icons/heart.svg" />
+              <b>10 likes</b>
+            </div>
+            <b
+              >Postado no dia: <%= new
+              Intl.DateTimeFormat(user.local).format(publication.create_at)
+              %></b
+            >
+          </div>
+          <div class="card-comments">
+            <% publication.Comments.forEach( comment => { %>
+            <p><b><%= comment.User.name %> </b> <%= comment.content %></p>
+            <% }) %>
+          </div>
+        </div>
+        <form class="form-comments" action="/comentario" method="POST">
+          <input
+            type="text"
+            hidden
+            name="postId"
+            value="<%= publication.id %>"
+          />
+          <input
+            type="text"
+            placeholder="Adicione um comentário..."
+            name="description"
+          />
+          <button type="submit">Publicar</button>
         </form>
       </div>
+      <% }) %>
     </main>
   </body>
 </html>
